@@ -1,0 +1,4 @@
+void regul_attente()
+{
+    
+}
