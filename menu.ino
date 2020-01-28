@@ -1,3 +1,5 @@
+BTN gauche,droite,haut,bas,select;
+
 void printX(float x)
 {
   if (x == ERREUR) {
@@ -21,6 +23,9 @@ void menu_debut()
 {
   if ( menu.elapsed(1500))
     menu.next(menu_afficheT);
+  
+  if(gauche.state(BTN_CLICK))
+    menu.next(menu_heure);
 }
 
 void menu_afficheT()
@@ -52,6 +57,39 @@ void menu_afficheH()
   else menu.next(menu_debut);
 }
 
+
+void menu_heure()
+{
+  if(menu.periodic(1500))
+  {
+    lcd.print("         ");
+    lcd.setCursor(0,0);
+    lcd.print(hour());
+    lcd.print(":");
+    lcd.print(minute());
+    lcd.print(":");
+    lcd.print(second());
+
+  }
+  
+  if (gps.available()) {
+    char c=gps.read();
+    Serial.write(c);
+    if(gpzda.traiterCar(c)) 
+    {
+      lcd.setCursor(0,1);
+      lcd.print("         ");
+      lcd.setCursor(0,1);
+      lcd.print(gpzda.heureUTC());      
+      lcd.print(":");
+      lcd.print(gpzda.minuteUTC());
+      lcd.print(":");
+      lcd.print(gpzda.secondeUTC());
+    }
+  }
+}
+
+
 void retro_on()
 {
   if (retro.isFirstRun()) {
@@ -60,6 +98,14 @@ void retro_on()
   }
 
   if (retro.elapsed(P_tempoLCD * 1000UL)) retro.next(retro_off);
+  
+  //lecture des boutons
+  uint8_t buttons = lcd.readButtons();
+  haut.update(buttons & BUTTON_UP);
+  bas.update(buttons & BUTTON_DOWN);
+  gauche.update(buttons & BUTTON_LEFT);
+  droite.update(buttons & BUTTON_RIGHT);
+  select.update(buttons & BUTTON_SELECT);
 }
 
 void retro_off()

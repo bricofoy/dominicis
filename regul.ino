@@ -1,4 +1,4 @@
 void regul_attente()
 {
-    
+..
 }
