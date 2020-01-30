@@ -42,11 +42,12 @@ SoftwareSerial gps(2, 3);                              // RX, TX
 int P_periode_mesures = 5; //5secondes
 int P_periode_enregistrement = 600; //600s = 10 min
 int8_t P_hysteresis = 2;    //2°C
+int8_t P_seuilEte = 19;
 uint8_t P_tempoLCD = 600;
 uint8_t P_tempoMvmt = 120;
 
 float T[4], H[3];
-int8_t tab6Tint[6], tab6Text[6], tab24Text[24];
+int8_t tab6Text[6], tab24Text[24];
 float Tmoy1int,  Tmoy1ext,  Tmoy24ext;
 
 OneWire busDSChau(pinDSchau);
@@ -74,6 +75,7 @@ void setup()
   
   delay(1000);
   lcd.begin(16, 2); // set up the LCD's number of columns and rows:
+
   setSyncProvider(RTC.get);   // the function to get the time from the RTC
   
   dsChau.begin(); // demarrage du capteur DS18B20

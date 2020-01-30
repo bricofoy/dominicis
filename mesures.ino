@@ -50,14 +50,11 @@ void mesures_majMoyennes()
     uint8_t index24 : 5;
   } info={false,0,false,0};
   
-  tab6Tint[info.index6]=round(T[DHint]);  
   tab6Text[info.index6]=round(T[DHext]);
   for(uint8_t i=0;i<6;i++) {
     Tmoy1ext+=tab6Text[i];
-    Tmoy1int+=tab6Tint[i];
   }
   Tmoy1ext=Tmoy1ext/info.init6?6:info.index6;
-  Tmoy1int=Tmoy1int/info.init6?6:info.index6;
   if(++info.index6==6){
     info.init6=true;
     info.index6=0;
@@ -71,6 +68,8 @@ void mesures_majMoyennes()
       info.init24=true;
       info.index24=0;
     }
+    if(Tmoy24ext>P_seuilEte) mode = ETE;
+    else mode = HIVER;
   }
   mesures.next(mesures_attente);
 }
