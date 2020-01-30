@@ -35,7 +35,7 @@ SoftwareSerial gps(2, 3);                              // RX, TX
 #define DHvmc 2
 #define Tchau 3
 
-#define ERREUR 666
+#define ERREUR -127
 #define ETE true
 #define HIVER false
 
@@ -43,7 +43,7 @@ int P_periode_mesures = 5; //5secondes
 int P_periode_enregistrement = 600; //600s = 10 min
 int8_t P_hysteresis = 2;    //2°C
 int8_t P_seuilEte = 19;
-uint8_t P_tempoLCD = 600;
+uint16_t P_tempoLCD = 600;
 uint8_t P_tempoMvmt = 120;
 
 float T[4], H[3];
