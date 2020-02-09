@@ -68,8 +68,8 @@ void mesures_majMoyennes()
       info.init24=true;
       info.index24=0;
     }
-    if(Tmoy24ext>P_seuilEte) mode = ETE;
-    else mode = HIVER;
+    if(Tmoy24ext>P_seuilEte) saison = ETE;
+    else saison = HIVER;
   }
   mesures.next(mesures_attente);
 }

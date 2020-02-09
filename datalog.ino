@@ -12,6 +12,30 @@ SdFile Logfile; // Log file.
 
 bool SdOK=false, FileOK=false; //some flags
 
+char * nomDuFichierLog() 
+{
+  //AUTEUR J-M-L pour forum Arduino http://forum.arduino.cc/index.php?topic=559714.0
+  
+  // on crée un fichier par mois
+  static char _nomDuFichierLog[13]; //  "AAAA-MM.LOG"
+  
+  // Convertir les données en chaines http://www.cplusplus.com/reference/cstdlib/itoa/
+  itoa (year(), _nomDuFichierLog, 10); // initialise les 4 premiers caractères
+  _nomDuFichierLog[4] = '-';
+  
+  if (month() < 10) { // on met un zéro
+    _nomDuFichierLog[5] = '0';
+    _nomDuFichierLog[6] = '0' + month();
+  } else {
+    _nomDuFichierLog[5] = '1';
+    _nomDuFichierLog[6] = '0' + month() - 10;
+  }
+  
+  _nomDuFichierLog[7] = '\0';
+  strcat(_nomDuFichierLog, ".log");
+  return _nomDuFichierLog;
+}
+
 /////////////////////////datalog state machine//////////////////////////////////
 void datalog_wait()
 {
@@ -36,14 +60,8 @@ void datalog_start()
 
 void datalog_write()
 {
- 	String logfilename;
- 	
-// 	logfilename+=LOGFILENAME;
-// 	logfilename+=DateTime.year;
-// 	logfilename+='-';
-// 	logfilename+=DateTime.month;
-// 	logfilename+=LOGFILEEXT;
-// 	FileOK=Logfile.open(logfilename.c_str(), O_RDWR | O_CREAT | O_AT_END);
+
+// 	FileOK=Logfile.open(nomDuFichierLog(), O_RDWR | O_CREAT | O_AT_END);
 // 	if(!FileOK)
 // 	{
 // 		SdOK=false;

@@ -1,14 +1,14 @@
 void regul_ouvert()
 {
-  if( ((mode==ETE)   && ((T[DHext]-P_hysteresis)>T[DHint])) || 
-      ((mode==HIVER) && ((T[DHext]+P_hysteresis)<T[DHint])) )
+  if( ((saison==ETE)   && ((T[DHext]-P_hysteresis)>T[DHint])) || 
+      ((saison==HIVER) && ((T[DHext]+P_hysteresis)<T[DHint])) )
     regul.next(regul_fermeture);
 }
 
 void regul_ferme()
 {
-  if( ((mode==ETE)   && (T[DHext]<T[DHint])) || 
-      ((mode==HIVER) && (T[DHext]>T[DHint])) )
+  if( ((saison==ETE)   && (T[DHext]<T[DHint])) || 
+      ((saison==HIVER) && (T[DHext]>T[DHint])) )
     regul.next(regul_ouverture);
 }
 

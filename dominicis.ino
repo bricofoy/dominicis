@@ -6,6 +6,7 @@ Adafruit_RGBLCDShield lcd = Adafruit_RGBLCDShield();
 
 #include <TimeLib.h>
 #include <DS1307RTC.h> 
+#define ZONE_UTC +1
 
 #include <decodeurGPZDA.h>
 decodeurGPZDA gpzda;
@@ -60,7 +61,7 @@ SimpleDHT22 dht;
 #include <btn.h>
 YASM mesures, menu, regul, retro, datalog;
 
-bool mode = ETE;
+bool saison = ETE;
 
 
 
@@ -75,8 +76,9 @@ void setup()
   
   delay(1000);
   lcd.begin(16, 2); // set up the LCD's number of columns and rows:
-
-  setSyncProvider(RTC.get);   // the function to get the time from the RTC
+  
+  setSyncInterval(1000);
+  setSyncProvider(RTC.get);    // the function to get the time from the RTC
   
   dsChau.begin(); // demarrage du capteur DS18B20
   dsChau.setWaitForConversion(false); // makes it async
@@ -93,8 +95,16 @@ void setup()
 
 void loop()
 {
+  if (gps.available()) {
+    if(gpzda.traiterCar(gps.read())) 
+    {
+      setTime(gpzda.heureUTC(), gpzda.minuteUTC(), gpzda.secondeUTC(), gpzda.jourUTC(), gpzda.moisUTC(), gpzda.anneeUTC());
+      adjustTime(ZONE_UTC * SECS_PER_HOUR);    // ici on est à UTC + 1
+      RTC.set(now());
+    }
+  }
   //retro.run();
-  //mesures.run();
+  mesures.run();
   menu.run();
   //regul.run();
   //datalog.run();

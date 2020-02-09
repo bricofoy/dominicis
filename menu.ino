@@ -60,33 +60,21 @@ void menu_afficheH()
 
 void menu_heure()
 {
-  if(menu.periodic(1500))
+  if(menu.periodic(800))
   {
-    lcd.print("         ");
+    //lcd.clear();
     lcd.setCursor(0,0);
     lcd.print(hour());
     lcd.print(":");
     lcd.print(minute());
     lcd.print(":");
-    lcd.print(second());
+    //lcd.print(second());
+    //lcd.setCursor(0,1);
+    lcd.print(now());
 
   }
   
-  if (gps.available()) {
-    char c=gps.read();
-    Serial.write(c);
-    if(gpzda.traiterCar(c)) 
-    {
-      lcd.setCursor(0,1);
-      lcd.print("         ");
-      lcd.setCursor(0,1);
-      lcd.print(gpzda.heureUTC());      
-      lcd.print(":");
-      lcd.print(gpzda.minuteUTC());
-      lcd.print(":");
-      lcd.print(gpzda.secondeUTC());
-    }
-  }
+  
 }
 
 
