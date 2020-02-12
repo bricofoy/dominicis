@@ -1,11 +1,11 @@
-void regul_ouvert()
+void regul_registres_ouverts()
 {
   if( ((saison==ETE)   && ((T[DHext]-P_hysteresis)>T[DHint])) || 
       ((saison==HIVER) && ((T[DHext]+P_hysteresis)<T[DHint])) )
     regul.next(regul_fermeture);
 }
 
-void regul_ferme()
+void regul_registres_fermes()
 {
   if( ((saison==ETE)   && (T[DHext]<T[DHint])) || 
       ((saison==HIVER) && (T[DHext]>T[DHint])) )
@@ -18,7 +18,7 @@ void regul_fermeture()
   
   if (regul.elapsed(P_tempoMvmt*1000UL)) {
     off();
-    regul.next(regul_ferme);
+    regul.next(regul_registres_fermes);
   }
 }
 
@@ -28,11 +28,11 @@ void regul_ouverture()
   
   if (regul.elapsed(P_tempoMvmt*1000UL)) {
     off();
-    regul.next(regul_ouvert);
+    regul.next(regul_registres_ouverts);
   }
 }
 
-void mouvement(int8_t sens)
+void mouvement(int sens)
 {
   digitalWrite(pinRLsens, sens);
   digitalWrite(pinRLalim, ON);
