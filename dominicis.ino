@@ -77,7 +77,7 @@ void setup()
   delay(1000);
   lcd.begin(16, 2); // set up the LCD's number of columns and rows:
   
-  setSyncInterval(1000);
+  setSyncInterval(60);
   setSyncProvider(RTC.get);    // the function to get the time from the RTC
   
   dsChau.begin(); // demarrage du capteur DS18B20
@@ -98,9 +98,16 @@ void loop()
   if (gps.available()) {
     if(gpzda.traiterCar(gps.read())) 
     {
+      time_t before = now();
       setTime(gpzda.heureUTC(), gpzda.minuteUTC(), gpzda.secondeUTC(), gpzda.jourUTC(), gpzda.moisUTC(), gpzda.anneeUTC());
       adjustTime(ZONE_UTC * SECS_PER_HOUR);    // ici on est à UTC + 1
-      RTC.set(now());
+      before = (long) before - now();
+      
+      // si l'heure gps diffère de plus ou moins 30s de l'heure RTC,  on synchronise la RTC,  sinon on la relit.
+      if(before<-30 || before >30) 
+        RTC.set(now());
+      else 
+        setSyncProvider(RTC.get);
     }
   }
   //retro.run();
