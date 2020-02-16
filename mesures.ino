@@ -2,7 +2,7 @@
 
 void mesures_attente()
 {
-  if (mesures.elapsed(10*60*1000UL)) //10 minutes
+  if (mesures.elapsed(10*1000UL)) //10 secondes
     mesures.next(mesures_purge);
 }
 
@@ -50,6 +50,10 @@ void mesures_majMoyennes()
     uint8_t index24 : 5;
   } info={false,0,false,0};
   
+  static time_t  derniereFois = 0;
+  
+  if((now()-derniereFois) < (10 * 60)) return; //on ne met à jour les moyennes que toutes les 10 minutes
+  
   tab6Text[info.index6]=round(T[DHext]);
   for(uint8_t i=0;i<6;i++) {
     Tmoy1ext+=tab6Text[i];
@@ -71,5 +75,6 @@ void mesures_majMoyennes()
     if(Tmoy24ext>P_seuilEte) saison = ETE;
     else saison = HIVER;
   }
+  derniereFois = now();
   mesures.next(mesures_attente);
 }
