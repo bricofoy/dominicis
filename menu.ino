@@ -6,14 +6,14 @@ void printX(float x)
     lcd.print("--.-");
     return;
   }
-
+  
   if (x > 100) {
     lcd.print(x, 0);
     return;
   }
-
+  
   if (x >= 0 && x < 10) lcd.print(" ");
-
+  
   lcd.print(x, 1);
 }
 
@@ -31,14 +31,14 @@ void menu_debut()
 void menu_afficheT()
 {
   uint8_t i = menu.runCount();
-
+  
   if (menu.isFirstRun()) {
     //lcd.begin(16, 2);
     lcd.clear();
     lcd.setCursor(15,0);
     lcd.print(SdOK?" ":"E");
   }
-
+  
   if (i <= sizeof(pinDHT-1)) {
     lcd.setCursor( i * 5, 0);
     printX(T[i]);
@@ -49,7 +49,7 @@ void menu_afficheT()
 void menu_afficheH()
 {
   uint8_t i = menu.runCount();
-
+  
   if (i <= (sizeof(pinDHT) - 1)) {
     lcd.setCursor( i * 5, 1);
     printX(H[i]);
@@ -71,7 +71,7 @@ void menu_heure()
     //lcd.print(second());
     //lcd.setCursor(0,1);
     lcd.print(now());
-
+    
   }
   
   
@@ -84,7 +84,7 @@ void retro_on()
     //lcd.begin(16, 2);
     lcd.setBacklight(0x01);
   }
-
+  
   if (retro.elapsed(P_tempoLCD * 1000UL)) retro.next(retro_off);
   
   //lecture des boutons
@@ -101,6 +101,6 @@ void retro_off()
   if (retro.isFirstRun()) {
     lcd.setBacklight(0);
   }
-
+  
   if (lcd.readButtons()) retro.next(retro_on);
 }

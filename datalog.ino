@@ -39,21 +39,21 @@ char * nomDuFichierLog()
 /////////////////////////datalog state machine//////////////////////////////////
 void datalog_wait()
 {
-	if(datalog.elapsed(P_periode_enregistrement * 1000UL) )
-		datalog.next(datalog_write);
+  if(datalog.elapsed(P_periode_enregistrement * 1000UL) )
+    datalog.next(datalog_write);
 }
 
 
 void datalog_start()
 {
-	SdOK=Sd.begin(PIN_SD_CS, SPI_HALF_SPEED);
-	if(!SdOK) //something gone wrong so retry later
-	{
-		datalog.next(datalog_start);
-		return;
-	}
- 	
- 	datalog.next(datalog_write);				
+  SdOK=Sd.begin(PIN_SD_CS, SPI_HALF_SPEED);
+  if(!SdOK) //something gone wrong so retry later
+  {
+    datalog.next(datalog_start);
+    return;
+  }
+  
+  datalog.next(datalog_write);				
 }
 
 
@@ -61,27 +61,27 @@ void datalog_start()
 void datalog_write()
 {
   if(datalog.isFirstRun()) {
-
-	FileOK=Logfile.open(nomDuFichierLog(), O_RDWR | O_CREAT | O_AT_END);
-	if(!FileOK)
-	{
-		SdOK=false;
-		datalog.next(datalog_start);
-		return;
-	}
-	//Add date and time starting the line
-	Logfile<<day()<<F("/")<<month()<<F("/")<<year()<<F(" ");
+    
+    FileOK=Logfile.open(nomDuFichierLog(), O_RDWR | O_CREAT | O_AT_END);
+    if(!FileOK)
+    {
+      SdOK=false;
+      datalog.next(datalog_start);
+      return;
+    }
+    //Add date and time starting the line
+    Logfile<<day()<<F("/")<<month()<<F("/")<<year()<<F(" ");
     Logfile<<hour()<<F(":")<<minute()<<F(":")<<second()<<F(";");
   }
   
   uint8_t i=datalog.runCount();
-	//températures et humidités
+  //températures et humidités
   if(i<3) Logfile<<_FLOAT(T[i],1)<<F(";")<<_FLOAT(H[i],1)<<F(";");
   if(i==3) Logfile<<_FLOAT(T[i],1)<<F(";");
-
-
-	Logfile<<_endl;
-	Logfile.close();
-	
-	datalog.next(datalog_wait);
+  
+  
+  Logfile<<_endl;
+  Logfile.close();
+  
+  datalog.next(datalog_wait);
 }      

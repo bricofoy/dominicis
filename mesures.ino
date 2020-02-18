@@ -12,11 +12,11 @@ void mesures_purge()
   
   if (i < sizeof(pinDHT) ) 
     dht.read(pinDHT[i], NULL, NULL, NULL); //lecture juste pour renouveller la valeur
-  else {
-    mesures.next(mesures_attenteAquisition);
-    dsChau.requestTemperatures();
-  }
-      
+    else {
+      mesures.next(mesures_attenteAquisition);
+      dsChau.requestTemperatures();
+    }
+    
 }
 
 void mesures_attenteAquisition()
@@ -28,7 +28,7 @@ void mesures_attenteAquisition()
 void mesures_lectureCapteurs()
 {
   uint8_t i = mesures.runCount();
-
+  
   if (i < sizeof(pinDHT) ) {
     if (dht.read2(pinDHT[i], &T[i], &H[i], NULL) != SimpleDHTErrSuccess) {
       //mesures.next(mesures_attenteAquisition);

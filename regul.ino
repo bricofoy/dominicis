@@ -1,14 +1,14 @@
 void regul_registres_ouverts()
 {
   if( ((saison==ETE)   && ((T[DHext]-P_hysteresis)>T[DHint])) || 
-      ((saison==HIVER) && ((T[DHext]+P_hysteresis)<T[DHint])) )
+    ((saison==HIVER) && ((T[DHext]+P_hysteresis)<T[DHint])) )
     regul.next(regul_fermeture);
 }
 
 void regul_registres_fermes()
 {
   if( ((saison==ETE)   && (T[DHext]<T[DHint])) || 
-      ((saison==HIVER) && (T[DHext]>T[DHint])) )
+    ((saison==HIVER) && (T[DHext]>T[DHint])) )
     regul.next(regul_ouverture);
 }
 

@@ -11,7 +11,7 @@ Adafruit_RGBLCDShield lcd = Adafruit_RGBLCDShield();
 #include <decodeurGPZDA.h>
 decodeurGPZDA gpzda;
 #include <SoftwareSerial.h>
-SoftwareSerial gps(2, 3);                              // RX, TX
+SoftwareSerial gps(2, 3);                                   // RX, TX
 
 #include <yasm.h>
 #include <btn.h>
@@ -40,9 +40,9 @@ SoftwareSerial gps(2, 3);                              // RX, TX
 #define ETE true
 #define HIVER false
 
-int P_periode_mesures = 5; //5secondes
-int P_periode_enregistrement = 600; //600s = 10 min
-int8_t P_hysteresis = 2;    //2°C
+int P_periode_mesures = 5;                                  //5secondes
+int P_periode_enregistrement = 600;                         //600s = 10 min
+int8_t P_hysteresis = 2;                                    //2°C
 int8_t P_seuilEte = 19;
 uint16_t P_tempoLCD = 600;
 uint8_t P_tempoMvmt = 120;
@@ -67,28 +67,28 @@ bool saison = ETE;
 
 void setup()
 {
-  
+
   Serial.begin(115200);
   gps.begin(4800);
-  
+
   pinMode(pinRLalim, OUTPUT);
   pinMode(pinRLsens, OUTPUT);
-  
+
   delay(1000);
-  lcd.begin(16, 2); // set up the LCD's number of columns and rows:
-  
+  lcd.begin(16, 2);                                         // set up the LCD's number of columns and rows:
+
   setSyncInterval(60);
-  setSyncProvider(RTC.get);    // the function to get the time from the RTC
-  
-  dsChau.begin(); // demarrage du capteur DS18B20
-  dsChau.setWaitForConversion(false); // makes it async
+  setSyncProvider(RTC.get);                                 // the function to get the time from the RTC
+
+  dsChau.begin();                                           // demarrage du capteur DS18B20
+  dsChau.setWaitForConversion(false);                       // makes it async
 
   mesures.next(mesures_attente);
   menu.next(menu_heure);
   retro.next(retro_on);
   datalog.next(datalog_start);
   regul.next(regul_fermeture);
-  
+
 
 
 }
@@ -100,21 +100,21 @@ void loop()
     {
       time_t before = now();
       setTime(gpzda.heureUTC(), gpzda.minuteUTC(), gpzda.secondeUTC(), gpzda.jourUTC(), gpzda.moisUTC(), gpzda.anneeUTC());
-      adjustTime(ZONE_UTC * SECS_PER_HOUR);    // ici on est à UTC + 1
+      adjustTime(ZONE_UTC * SECS_PER_HOUR);                 // ici on est à UTC + 1
       before = (long) before - now();
-      
+
       // si l'heure gps diffère de plus ou moins 30s de l'heure RTC,  on synchronise la RTC,  sinon on la relit.
       if(before<-30 || before >30) 
-        RTC.set(now());
+      RTC.set(now());
       else 
-        setSyncProvider(RTC.get);
+      setSyncProvider(RTC.get);
     }
-  }
+   }
   //retro.run();
   mesures.run();
   menu.run();
-  //regul.run();
-  //datalog.run();
+//regul.run();
+//datalog.run();
 }
 
 
