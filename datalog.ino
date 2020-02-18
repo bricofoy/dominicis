@@ -1,6 +1,6 @@
 #include <SPI.h>
 #include <SdFat.h>
-//#include <Streaming.h>
+#include <Streaming.h>
 
 #define PIN_SD_CS	SS
 
@@ -32,7 +32,7 @@ char * nomDuFichierLog()
   }
   
   _nomDuFichierLog[7] = '\0';
-  strcat(_nomDuFichierLog, ".log");
+  strcat(_nomDuFichierLog, ".csv");
   return _nomDuFichierLog;
 }
 
@@ -60,40 +60,28 @@ void datalog_start()
 
 void datalog_write()
 {
+  if(datalog.isFirstRun()) {
 
-// 	FileOK=Logfile.open(nomDuFichierLog(), O_RDWR | O_CREAT | O_AT_END);
-// 	if(!FileOK)
-// 	{
-// 		SdOK=false;
-// 		datalog.next(datalog_wait_card);
-// 		return;
-// 	}
-// 	//Add date and time starting the line
-// 	Logfile<<RTC.getS(DS1307_STR_DATE,0)<<F(" ")<<RTC.getS(DS1307_STR_TIME,0)<<F(";");
-// 	//add the temperatures
-// 	for(byte i=0;i<SENSOR_NBR;i++) 
-// 	{
-// 		TForce[i]?Logfile<<F("F;"):Logfile<<F(" ;");
-// 		Logfile<<TAge[i]<<F(";");
-// 		Logfile<<T[i]<<F(";");
-// 	}
-// 	//add the heating relevant data : Setpoint temperature, water calculated temperature, valve position
-// 	Logfile<<TinSet<<F(";")<<Hon<<F(";")<<Wsetpoint<<F(";")<<MVWantedPos<<F(";")<<(int)MVActualPos<<F(";");
-// 	//and the relays status
-// 	Logfile<<(byte)Pwm0<<F(";");	
-// 	(RF&BIT_R0)?Logfile<<F("F;"):Logfile<<F(" ;");
-// 	(R&BIT_R0)?Logfile<<F("1;"):Logfile<<F("0;");
-// 	(RF&BIT_R1)?Logfile<<F("F;"):Logfile<<F(" ;");
-// 	(R&BIT_R1)?Logfile<<F("1;"):Logfile<<F("0;");
-// 	(RF&BIT_R2)?Logfile<<F("F;"):Logfile<<F(" ;");
-// 	(R&BIT_R2)?Logfile<<F("1;"):Logfile<<F("0;");	
-// 	(RF&BIT_R3)?Logfile<<F("F;"):Logfile<<F(" ;");
-// 	(R&BIT_R3)?Logfile<<F("1;"):Logfile<<F("0;");
-// 	(RF&BIT_R4)?Logfile<<F("F;"):Logfile<<F(" ;");
-// 	(R&BIT_R4)?Logfile<<F("1;"):Logfile<<F("0;");
-// 
-// 	Logfile<<_endl;
-// 	Logfile.close();
+	FileOK=Logfile.open(nomDuFichierLog(), O_RDWR | O_CREAT | O_AT_END);
+	if(!FileOK)
+	{
+		SdOK=false;
+		datalog.next(datalog_start);
+		return;
+	}
+	//Add date and time starting the line
+	Logfile<<day()<<F("/")<<month()<<F("/")<<year()<<F(" ");
+    Logfile<<hour()<<F(":")<<minute()<<F(":")<<second()<<F(";");
+  }
+  
+  uint8_t i=datalog.runCount();
+	//températures et humidités
+  if(i<3) Logfile<<_FLOAT(T[i],1)<<F(";")<<_FLOAT(H[i],1)<<F(";");
+  if(i==3) Logfile<<_FLOAT(T[i],1)<<F(";");
+
+
+	Logfile<<_endl;
+	Logfile.close();
 	
 	datalog.next(datalog_wait);
 }      
