@@ -1,3 +1,5 @@
+#include <btn.h>
+
 BTN gauche,droite,haut,bas,select;
 
 void printX(float x)
@@ -36,7 +38,7 @@ void menu_afficheT()
     //lcd.begin(16, 2);
     lcd.clear();
     lcd.setCursor(15,0);
-    lcd.print(SdOK?" ":"E");
+    lcd.print((SdOK&&FileOK)?" ":"E");
   }
   
   if (i <= sizeof(pinDHT-1)) {

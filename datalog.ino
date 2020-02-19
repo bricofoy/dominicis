@@ -70,7 +70,7 @@ void datalog_write()
       return;
     }
     //Add date and time starting the line
-    Logfile<<day()<<F("/")<<month()<<F("/")<<year()<<F(" ");
+    Logfile<<year()<<F("-")<<month()<<F("-")<<day()<<F(" ");
     Logfile<<hour()<<F(":")<<minute()<<F(":")<<second()<<F(";");
   }
   
@@ -79,9 +79,10 @@ void datalog_write()
   if(i<3) Logfile<<_FLOAT(T[i],1)<<F(";")<<_FLOAT(H[i],1)<<F(";");
   if(i==3) Logfile<<_FLOAT(T[i],1)<<F(";");
   
-  
-  Logfile<<_endl;
-  Logfile.close();
-  
-  datalog.next(datalog_wait);
-}      
+  if(i==4) {
+    Logfile<<_FLOAT(Tmoy1ext,1)<<F(";")<<_FLOAT(Tmoy24ext,1)<<F(";")
+    Logfile<<_endl;
+    Logfile.close();
+    datalog.next(datalog_wait);
+  }
+}

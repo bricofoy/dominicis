@@ -109,12 +109,12 @@ void loop()
       else 
       setSyncProvider(RTC.get);
     }
-   }
-  //retro.run();
+  }
+  retro.run();
   mesures.run();
   menu.run();
-//regul.run();
-//datalog.run();
+  regul.run();
+  datalog.run();
 }
 
 
