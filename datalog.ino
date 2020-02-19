@@ -4,9 +4,6 @@
 
 #define PIN_SD_CS	SS
 
-#define LOGFILENAME	"datalog"
-#define LOGFILEEXT 	".csv"
-
 SdFat Sd; // File system object.
 SdFile Logfile; // Log file.
 
