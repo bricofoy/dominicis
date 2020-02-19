@@ -80,7 +80,7 @@ void datalog_write()
   if(i==3) Logfile<<_FLOAT(T[i],1)<<F(";");
   
   if(i==4) {
-    Logfile<<_FLOAT(Tmoy1ext,1)<<F(";")<<_FLOAT(Tmoy24ext,1)<<F(";")
+    Logfile<<_FLOAT(Tmoy1ext,1)<<F(";")<<_FLOAT(Tmoy24ext,1)<<F(";");
     Logfile<<_endl;
     Logfile.close();
     datalog.next(datalog_wait);
