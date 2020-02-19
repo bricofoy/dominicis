@@ -52,7 +52,10 @@ void mesures_majMoyennes()
   
   static time_t  derniereFois = 0;
   
-  if((now()-derniereFois) < (10 * 60)) return; //on ne met à jour les moyennes que toutes les 10 minutes
+  if((now()-derniereFois) < (10 * 60)) {
+    mesures.next(mesures_attente);
+    return; //on ne met à jour les moyennes que toutes les 10 minutes
+  }
   
   tab6Text[info.index6]=round(T[DHext]);
   for(uint8_t i=0;i<6;i++) {
