@@ -13,6 +13,8 @@ decodeurGPZDA gpzda;
 #include <SoftwareSerial.h>
 SoftwareSerial gps(2, 3);   // RX, TX
 
+#include <Streaming.h>
+
 #include <yasm.h>
 #include <btn.h>
 #include <OneWire.h>
@@ -44,12 +46,12 @@ int P_periode_mesures = 5;            //5secondes
 int P_periode_enregistrement = 600;   //600s = 10 min
 int8_t P_hysteresis = 2;              //2°C
 int8_t P_seuilEte = 19;
-uint16_t P_tempoLCD = 600;
+uint16_t P_tempoLCD = 30*1000;
 uint8_t P_tempoMvmt = 120;
 
 float T[4], H[3];
-int8_t tab6Text[6], tab24Text[24];
-float Tmoy1int,  Tmoy1ext,  Tmoy24ext;
+int tab6Text[6], tab24Text[24];
+float Tmoy6ext,  Tmoy24ext;
 
 OneWire busDSChau(pinDSchau);
 DallasTemperature dsChau(&busDSChau);
@@ -69,7 +71,8 @@ void setup()
 {
 
   Serial.begin(115200);
-  gps.begin(4800);
+  Serial<<"init"<<_endl;
+  gps.begin(9600);
 
   pinMode(pinRLalim, OUTPUT);
   pinMode(pinRLsens, OUTPUT);
@@ -82,7 +85,7 @@ void setup()
   dsChau.begin();                        // demarrage du capteur DS18B20
   dsChau.setWaitForConversion(false);    // makes it async
 
-  mesures.next(mesures_attente);
+  mesures.next(mesures_purge);
   menu.next(menu_heure);
   retro.next(retro_on);
   datalog.next(datalog_start);
@@ -95,22 +98,30 @@ void setup()
 void loop()
 {
   if (gps.available()) {
-    if(gpzda.traiterCar(gps.read())) 
+    char c=gps.read();
+    Serial<<c;
+    if(gpzda.traiterCar(c)) 
     {
       time_t before = now();
-      setSyncInterval(2000);            //pour être sûr de ne as re-synchroniser avant la fin du test
+      Serial<<_endl<<before<<" ";
+      setSyncInterval(90000);            //pour être sûr de ne as re-synchroniser avant la fin du test
       setTime(gpzda.heureUTC(), gpzda.minuteUTC(), gpzda.secondeUTC(), gpzda.jourUTC(), gpzda.moisUTC(), gpzda.anneeUTC());
       adjustTime(ZONE_UTC * SECS_PER_HOUR);   // ici on est à UTC + 1
-      before = (long) before - now();
-
+      if (before > now()) before = before - now();
+      else before = now()-before;
+      Serial<<before<<" ";
       // si l'heure gps diffère de plus ou moins 30s de l'heure RTC,  on synchronise la RTC,  sinon on la relit.
-      if(before<-30 || before >30) 
+      if( before >30) 
+      {
         RTC.set(now());
+        Serial<<"sync ";
+      }
       else 
         setSyncProvider(RTC.get);
-      
+     
       setSyncInterval(300);            // retour à la valeur par défaut
-    }
+      Serial<<now()<<_endl;
+    } 
   }
   retro.run();
   mesures.run();

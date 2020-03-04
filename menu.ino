@@ -64,19 +64,26 @@ void menu_heure()
 {
   if(menu.periodic(800))
   {
-    //lcd.clear();
-    lcd.setCursor(0,0);
+    lcd.clear();
+    //lcd.setCursor(0,0);
     lcd.print(hour());
     lcd.print(":");
     lcd.print(minute());
-    lcd.print(":");
+    //lcd.print(":");
     //lcd.print(second());
     //lcd.setCursor(0,1);
-    lcd.print(now());
+    //lcd.print(now());
+    lcd<<" "<<Tmoy24ext<<Tmoy6ext;
+    
+    lcd.setCursor(0,1);
+    lcd<<(saison==ETE?"ETE":"HIV");
+    lcd<<((regul.isInState(regul_registres_ouverts) || regul.isInState(regul_ouverture))?" O ":" F ");
+    lcd<<T[DHint]<<T[DHext];
     
   }
   
-  
+  if (select.state(BTN_CLICK)) {lcd<<Tmoy6ext; regul.next(regul_fermeture);}
+  if (select.state(BTN_LONGCLICK)) regul.next(regul_ouverture);
 }
 
 
