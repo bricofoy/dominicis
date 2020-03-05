@@ -58,7 +58,6 @@ void datalog_start()
 void datalog_write()
 {
   if(datalog.isFirstRun()) {
-    
     FileOK=Logfile.open(nomDuFichierLog(), O_RDWR | O_CREAT | O_AT_END);
     if(!FileOK)
     {
