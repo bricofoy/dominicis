@@ -35,19 +35,18 @@ void mesures_attenteAquisition()
 void mesures_lectureCapteurs()
 {
   uint8_t i = mesures.runCount();
-  bool erreur = false;
+//   bool erreur = false;
   
   if (i < sizeof(pinDHT) ) {
     if (dht.read2(pinDHT[i], &T[i], &H[i], NULL) != SimpleDHTErrSuccess) {
-      //mesures.next(mesures_attenteAquisition);
       T[i] = H[i] = ERREUR;
-      erreur = true;
+//       erreur = true;
     }
   }
   else {
     T[i]=dsChau.getTempCByIndex(0);
-    if(erreur || (T[i]==ERREUR)) mesures.next(mesures_purge);
-    else mesures.next(mesures_majMoyennes);
+/*    if(erreur || (T[i]==ERREUR)) mesures.next(mesures_purge);
+    else */mesures.next(mesures_majMoyennes);
   }
 }
 
@@ -65,7 +64,7 @@ void mesures_majMoyennes()
   
 
   if(T[DHext]==ERREUR) {
-    mesures.next(mesures_purge);
+    mesures.next(mesures_purge);//on a besoin d'une valeur correcte pour maj les moyennes
     return;
   }
   
