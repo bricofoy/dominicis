@@ -9,7 +9,7 @@ struct info_t {
 
 void mesures_attente()
 {
-  if (mesures.elapsed(10*1000UL)) //10 secondes
+  if (mesures.elapsed(P_periode_mesures*1000UL - DELAI_MAJ_DHT)) 
     mesures.next(mesures_purge);
 }
 
@@ -28,7 +28,7 @@ void mesures_purge()
 
 void mesures_attenteAquisition()
 {
-  if (mesures.elapsed(2500))
+  if (mesures.elapsed(DELAI_MAJ_DHT))
     mesures.next(mesures_lectureCapteurs);
 }
 

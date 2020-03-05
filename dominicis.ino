@@ -20,6 +20,7 @@ SoftwareSerial gps(2, 3);   // RX, TX
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <SimpleDHT.h>
+#define DELAI_MAJ_DHT 2600UL
 
 #define pinDHTint 7
 #define pinDHText 6
@@ -46,7 +47,7 @@ int P_periode_mesures = 5;            //5secondes
 int P_periode_enregistrement = 600;   //600s = 10 min
 int8_t P_hysteresis = 2;              //2°C
 int8_t P_seuilEte = 19;
-uint16_t P_tempoLCD = 30*1000;
+uint16_t P_tempoLCD = 300;
 uint8_t P_tempoMvmt = 120;
 
 float T[4], H[3];
