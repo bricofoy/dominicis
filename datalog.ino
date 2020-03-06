@@ -78,6 +78,7 @@ void datalog_write()
   if(i==4) {
     Logfile<<_FLOAT(Tmoy6ext,1)<<F(";")<<_FLOAT(Tmoy24ext,1)<<F(";");
     Logfile<<(regul.isInState(regul_registres_ouverts) || regul.isInState(regul_ouverture));
+    Logfile<<saison;
     Logfile<<_endl;
     Logfile.close();
     datalog.next(datalog_wait);
