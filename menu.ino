@@ -2,14 +2,15 @@
 
 BTN gauche,droite,haut,bas,select;
 
-void printX(float x)
+void printValue(float x)
 {
   if (x == ERREUR) {
     lcd.print("--.-");
     return;
   }
   
-  if (x > 100) {
+  if (x >= 100) {
+    lcd<<" ";
     lcd.print(x, 0);
     return;
   }
@@ -19,15 +20,31 @@ void printX(float x)
   lcd.print(x, 1);
 }
 
+void printTime()
+{
+  if(hour()<10) lcd<<" ";
+  lcd<<hour()<<":";
+  if(minute()<10) lcd<<"0";
+  lcd<<minute();
+}
+
+// 0132456789012345
+// JJ/MM/AAAA HH:MM 
+// ETE AUTO OUV  OK
+
 
 
 void menu_debut()
 {
-  if ( menu.elapsed(1500))
-    menu.next(menu_afficheT);
+  if(menu.isFirstRun()){
+    lcd.clear();
+  }
   
-  if(gauche.state(BTN_CLICK))
-    menu.next(menu_heure);
+  if(menu.periodic(1000)) {
+    lcd.setCursor(0,0);
+    printTime();
+    
+  }
 }
 
 void menu_afficheT()
@@ -43,7 +60,7 @@ void menu_afficheT()
   
   if (i <= sizeof(pinDHT-1)) {
     lcd.setCursor( i * 5, 0);
-    printX(T[i]);
+    printValue(T[i]);
   }
   else menu.next(menu_afficheH);
 }
@@ -54,7 +71,7 @@ void menu_afficheH()
   
   if (i <= (sizeof(pinDHT) - 1)) {
     lcd.setCursor( i * 5, 1);
-    printX(H[i]);
+    printValue(H[i]);
   }
   else menu.next(menu_debut);
 }
@@ -64,22 +81,20 @@ void menu_heure()
 {
   if(menu.periodic(800))
   {
-    lcd.clear();
-    //lcd.setCursor(0,0);
-    lcd.print(hour());
-    lcd.print(":");
-    lcd.print(minute());
-    //lcd.print(":");
-    //lcd.print(second());
-    //lcd.setCursor(0,1);
-    //lcd.print(now());
-    lcd<<" "<<Tmoy24ext<<Tmoy6ext;
+    //lcd.clear();
+    lcd.setCursor(0,0);
+    printTime();
+    lcd<<" ";
+    printValue(Tmoy6ext);
+    lcd<<" ";
+    printValue(Tmoy24ext);
     
     lcd.setCursor(0,1);
-    lcd<<(saison==ETE?"ETE":"HIV");
-    lcd<<((regul.isInState(regul_registres_ouverts) || regul.isInState(regul_ouverture))?" O ":" F ");
-    lcd<<T[DHint]<<T[DHext];
-    
+    lcd<<(saison==ETE?F("ETE"):F("HIV"));
+    lcd<<((regul.isInState(regul_registres_ouverts) || regul.isInState(regul_ouverture))?F(" O "):F(" F "));
+    printValue(T[DHint]);
+    lcd<<" ";
+    printValue(T[DHext]);
   }
   
   if (select.state(BTN_CLICK)) {lcd<<Tmoy6ext; regul.next(regul_fermeture);}

@@ -44,7 +44,7 @@ SoftwareSerial gps(2, 3);   // RX, TX
 #define HIVER false
 
 int P_periode_mesures = 5;            //5secondes
-int P_periode_enregistrement = 600;   //600s = 10 min
+int P_periode_enregistrement = 10;   //600s = 10 min
 int8_t P_hysteresis = 2;              //2°C
 int8_t P_seuilEte = 19;
 uint16_t P_tempoLCD = 300;
@@ -79,8 +79,11 @@ void setup()
   pinMode(pinRLsens, OUTPUT);
 
   delay(1000);
-  lcd.begin(16, 2);                      // set up the LCD's number of columns and rows:
-
+  lcd.begin(16, 2);                      // set up the LCD's number of columns and rows
+  
+  for(uint8_t i=0;i<sizeof(T);i++) T[i]=ERREUR;  
+  for(uint8_t i=0;i<sizeof(H);i++) H[i]=ERREUR;
+  
   setSyncProvider(RTC.get);              // the function to get the time from the RTC
 
   dsChau.begin();                        // demarrage du capteur DS18B20
@@ -98,14 +101,13 @@ void setup()
 
 void loop()
 {
-  if (gps.available()) {
-    char c=gps.read();
-    Serial<<c;
-    if(gpzda.traiterCar(c)) 
+  while (gps.available()) {
+    if(gpzda.traiterCar(gps.read())) 
     {
       time_t before = now();
       Serial<<_endl<<before<<" ";
-      setSyncInterval(90000);            //pour être sûr de ne as re-synchroniser avant la fin du test
+      //setSyncInterval(90000); 
+      setSyncProvider(NULL);           //pour être sûr de ne pas re-synchroniser avant la fin du test
       setTime(gpzda.heureUTC(), gpzda.minuteUTC(), gpzda.secondeUTC(), gpzda.jourUTC(), gpzda.moisUTC(), gpzda.anneeUTC());
       adjustTime(ZONE_UTC * SECS_PER_HOUR);   // ici on est à UTC + 1
       if (before > now()) before = before - now();
@@ -117,7 +119,7 @@ void loop()
         RTC.set(now());
         Serial<<"sync ";
       }
-      else 
+      //else 
         setSyncProvider(RTC.get);
      
       setSyncInterval(300);            // retour à la valeur par défaut

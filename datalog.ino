@@ -14,7 +14,7 @@ char * nomDuFichierLog()
   //AUTEUR J-M-L pour forum Arduino http://forum.arduino.cc/index.php?topic=559714.0
   
   // on crée un fichier par mois
-  static char _nomDuFichierLog[13]; //  "AAAA-MM.LOG"
+  static char _nomDuFichierLog[13]; //  "AAAA-MM.CSV"
   
   // Convertir les données en chaines http://www.cplusplus.com/reference/cstdlib/itoa/
   itoa (year(), _nomDuFichierLog, 10); // initialise les 4 premiers caractères
@@ -37,7 +37,7 @@ char * nomDuFichierLog()
 void datalog_wait()
 {
   if(datalog.elapsed(P_periode_enregistrement * 1000UL) )
-    datalog.next(datalog_write);
+    datalog.next(datalog_start);
 }
 
 
@@ -46,6 +46,8 @@ void datalog_start()
   SdOK=Sd.begin(PIN_SD_CS, SPI_HALF_SPEED);
   if(!SdOK) //something gone wrong so retry later
   {
+    lcd.setCursor(15,0);
+    lcd<<F("x");
     datalog.next(datalog_start);
     return;
   }
@@ -59,13 +61,21 @@ void datalog_write()
 {
   if(datalog.isFirstRun()) {
     FileOK=Logfile.open(nomDuFichierLog(), O_RDWR | O_CREAT | O_AT_END);
+    lcd.setCursor(15,0);
     if(!FileOK)
     {
+      lcd<<F("x");
       SdOK=false;
-      datalog.next(datalog_start);
+      datalog.next(datalog_start);    
       return;
     }
-    //Add date and time starting the line
+    lcd<<F("w");
+    bool FileExist=(Logfile.fileSize()>10);
+    lcd.setCursor(15,1);
+    lcd<<(FileExist?"o":"n");
+    if(!FileExist) //le fichier est nouveau, on ajoute les étiquettes sur la première ligne
+      Logfile<<F("Date;Tint;Hint;Tvmc;Hvmc;Text;Hext;Tchau;Text moy 10m;Text moy 24h;Registre F/O;Mode H/E")<<_endl;
+    //date et heure en début de ligne
     Logfile<<year()<<F("-")<<month()<<F("-")<<day()<<F(" ");
     Logfile<<hour()<<F(":")<<minute()<<F(":")<<second()<<F(";");
   }
@@ -76,11 +86,16 @@ void datalog_write()
   if(i==3) Logfile<<_FLOAT(T[i],1)<<F(";");
   
   if(i==4) {
+    //moyennes Text
     Logfile<<_FLOAT(Tmoy6ext,1)<<F(";")<<_FLOAT(Tmoy24ext,1)<<F(";");
-    Logfile<<(regul.isInState(regul_registres_ouverts) || regul.isInState(regul_ouverture));
+    //etat des registres
+    Logfile<<(regul.isInState(regul_registres_ouverts) || regul.isInState(regul_ouverture))<<F(";");
+    //mode
     Logfile<<saison;
     Logfile<<_endl;
     Logfile.close();
+    lcd.setCursor(15,0);
+    lcd<<F(" ");
     datalog.next(datalog_wait);
   }
 }
