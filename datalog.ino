@@ -43,16 +43,15 @@ void datalog_wait()
 
 void datalog_start()
 {
-  SdOK=Sd.begin(PIN_SD_CS, SPI_HALF_SPEED);
-  if(!SdOK) //something gone wrong so retry later
-  {
-    lcd.setCursor(15,0);
-    lcd<<F("x");
-    datalog.next(datalog_start);
-    return;
+  if(datalog.periodic(1000)) {
+    SdOK=Sd.begin(PIN_SD_CS, SPI_HALF_SPEED);
+    if(!SdOK) {
+      lcd.setCursor(15,0);
+      lcd<<F("x");
+    }
   }
   
-  datalog.next(datalog_write);				
+  if(SdOK) datalog.next(datalog_write);				
 }
 
 
