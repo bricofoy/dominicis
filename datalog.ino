@@ -70,17 +70,17 @@ void datalog_write()
       return;
     }
     lcd<<F("w");
-    bool FileExist=(Logfile.fileSize()>10);
-    lcd.setCursor(15,1);
-    lcd<<(FileExist?"o":"n");
-    if(!FileExist) //le fichier est nouveau, on ajoute les étiquettes sur la première ligne
-      Logfile<<F("Date;Tint;Hint;Tvmc;Hvmc;Text;Hext;Tchau;Text moy 10m;Text moy 24h;Registre F/O;Mode H/E")<<_endl;
+    
+    //si le fichier est nouveau, on ajoute les étiquettes sur la première ligne
+    if(Logfile.fileSize()<10) Logfile<<F("Date;Tint;Hint;Tvmc;Hvmc;Text;Hext;Tchau;Text moy 10m;Text moy 24h;Registre F/O;Mode H/E")<<_endl;
+    
     //date et heure en début de ligne
     Logfile<<year()<<F("-")<<month()<<F("-")<<day()<<F(" ");
     Logfile<<hour()<<F(":")<<minute()<<F(":")<<second()<<F(";");
   }
   
   uint8_t i=datalog.runCount();
+  
   //températures et humidités
   if(i<3) Logfile<<_FLOAT(T[i],1)<<F(";")<<_FLOAT(H[i],1)<<F(";");
   if(i==3) Logfile<<_FLOAT(T[i],1)<<F(";");

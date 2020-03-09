@@ -44,7 +44,7 @@ SoftwareSerial gps(2, 3);   // RX, TX
 #define HIVER false
 
 int P_periode_mesures = 5;            //5secondes
-int P_periode_enregistrement = 10;   //600s = 10 min
+int P_periode_enregistrement = 300;   //600s = 10 min
 int8_t P_hysteresis = 2;              //2°C
 int8_t P_seuilEte = 19;
 uint16_t P_tempoLCD = 300;
