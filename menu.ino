@@ -104,15 +104,17 @@ void menu_heure()
 
 void retro_on()
 {
-  if (retro.isFirstRun()) {
-    //lcd.begin(16, 2);
-    lcd.setBacklight(0x01);
-  }
+  if (retro.isFirstRun()) lcd.setBacklight(0x01);
   
   if (retro.elapsed(P_tempoLCD * 1000UL)) retro.next(retro_off);
   
   //lecture des boutons
   uint8_t buttons = lcd.readButtons();
+  
+  //si il y a eu de l'activité, raz du chrono
+  if(buttons) retro.next(retro_on, true);
+  
+  //et on transmet l'activité à qui de droit
   haut.update(buttons & BUTTON_UP);
   bas.update(buttons & BUTTON_DOWN);
   gauche.update(buttons & BUTTON_LEFT);
@@ -126,5 +128,8 @@ void retro_off()
     lcd.setBacklight(0);
   }
   
-  if (lcd.readButtons()) retro.next(retro_on);
+  if (lcd.readButtons()) {
+    retro.next(retro_on);
+    lcd.begin(16, 2); //au cas où l'i2c aurait buggé
+  }
 }
