@@ -43,7 +43,7 @@ void datalog_wait()
 
 void datalog_start()
 {
-  if(datalog.periodic(1000)) {
+  if(datalog.periodic(2000)) {
     SdOK=Sd.begin(PIN_SD_CS, SPI_HALF_SPEED);
     if(!SdOK) {
       lcd.setCursor(15,0);
