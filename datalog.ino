@@ -71,7 +71,7 @@ void datalog_write()
     lcd<<F("w");
     
     //si le fichier est nouveau, on ajoute les étiquettes sur la première ligne
-    if(Logfile.fileSize()<10) Logfile<<F("Date;Tint;Hint;Tvmc;Hvmc;Text;Hext;Tchau;Text moy 10m;Text moy 24h;Registre F/O;Mode H/E")<<_endl;
+    if(Logfile.fileSize()<10) Logfile<<F("Date;Tint;Hint;Text;Hext;Tvmc;Hvmc;Tchau;Text moy 10m;Text moy 24h;Registre F/O;Mode H/E")<<_endl;
     
     //date et heure en début de ligne
     Logfile<<year()<<F("-")<<month()<<F("-")<<day()<<F(" ");
