@@ -60,14 +60,14 @@ void datalog_write()
 {
   if(datalog.isFirstRun()) {
     FileOK=Logfile.open(nomDuFichierLog(), O_RDWR | O_CREAT | O_AT_END);
-    lcd.setCursor(14,0);
     if(!FileOK)
     {
-      lcd<<F("xx");
       SdOK=false;
       datalog.next(datalog_start);    
       return;
     }
+    //temoin d'activité de la carte sur l'écran
+    lcd.setCursor(14,0);
     lcd<<F("ec");
     
     //si le fichier est nouveau, on ajoute les étiquettes sur la première ligne
@@ -94,8 +94,11 @@ void datalog_write()
     //fin de ligne et fermeture du fichier
     Logfile<<_endl;
     Logfile.close();
+    
+    //on efface le témoin d'activité
     lcd.setCursor(14,0);
     lcd<<F("  ");
+    
     datalog.next(datalog_wait);
   }
 }
