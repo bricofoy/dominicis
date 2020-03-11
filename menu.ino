@@ -81,16 +81,17 @@ void purgeBtn() {
 
 // 0132456789012345
 // JJ/MM/AAAA SD:ok 
-// HH:MM:SS AUTO 
+// HH:MM:SS AUTO F
 
 void menu_heure()
 {
   if(menu.isFirstRun()) {
+    lcd.begin(16, 2); //au cas où l'i2c aurait buggé
     purgeBtn();
     lcd.clear();
   }
   
-  if(menu.periodic(800)) {
+  if(menu.periodic(1000)) {
     //ligne 1
     lcd.setCursor(0,0);
     printDate(); printSp(); lcd<<F("SD"); print2p(); 
@@ -109,8 +110,8 @@ void menu_heure()
 }
 
 // 0132456789012345
-// int--.- ext__._ 
-// me--.- s-- ETE O
+// in--.- ext__._ 
+// me--.- s-- ETE F
 //       MANU 
 
 void menu_etat()
@@ -123,8 +124,8 @@ void menu_etat()
   if(menu.periodic(800)) {
     //ligne 1
     lcd.setCursor(0,0);
-    lcd<<F("i"); printValue(T[DHint]); printSp();
-    lcd<<F("e"); printValue(T[DHext]);
+    lcd<<F("in"); printValue(T[DHint]); printSp();
+    lcd<<F("ext"); printValue(T[DHext]);
     
     //ligne 2
     lcd.setCursor(0,1); 
@@ -167,6 +168,8 @@ void menu_mode()
     if(mode==OUVERT) regul.next(regul_ouverture);
     if(mode==CLOSED) regul.next(regul_fermeture);
   }
+  
+  if (menu.elapsed(P_tempoLCD * 1000UL)) menu.next(menu_heure);
 
   if(gauche.state(BTN_LONGCLICK)) menu.next(menu_heure);
 }
@@ -300,8 +303,8 @@ void retro_off()
   }
   
   if (lcd.readButtons()) {
-    lcd.begin(16, 2); //au cas où l'i2c aurait buggé
     retro.next(retro_on);
-    menu.next(menu_heure);
+    //menu.next(menu_heure);
+    delay(500);
   }
 }
