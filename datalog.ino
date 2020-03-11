@@ -33,7 +33,23 @@ char * nomDuFichierLog()
   return _nomDuFichierLog;
 }
 
+void fatDateTime(uint16_t* date, uint16_t* time) {
+  // return date using FAT_DATE macro to format fields
+  *date = FAT_DATE(year(), month(), day());
+  // return time using FAT_TIME macro to format fields
+  *time = FAT_TIME(hour(), minute(), second());
+}
+
 /////////////////////////datalog state machine//////////////////////////////////
+void datalog_setup()
+{
+  // set date time callback function
+  SdFile::dateTimeCallback(fatDateTime);
+  
+  datalog.next(datalog_start);
+}
+
+
 void datalog_wait()
 {
   if(datalog.elapsed(P_periode_enregistrement * 1000UL) )
