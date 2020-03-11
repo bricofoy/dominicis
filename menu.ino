@@ -99,8 +99,8 @@ void menu_heure()
     
     //ligne 2
     lcd.setCursor(0,1); 
-    printHeure(true);
-    printSp(); printMode(); printSp(); printOF();
+    printHeure();
+    printSp(); printMode(); printSp(); printSaison(); printSp(); printOF();
   }
 
   if(bas.state(BTN_CLICK)) menu.next(menu_ext);
