@@ -43,8 +43,12 @@ SoftwareSerial gps(2, 3);   // RX, TX
 #define ETE true
 #define HIVER false
 
+#define AUTO 0
+#define OUVERT 1
+#define CLOSED 2
+
 int P_periode_mesures = 5;            //5secondes
-int P_periode_enregistrement = 300;   //600s = 10 min
+int P_periode_enregistrement = 60;   //600s = 10 min
 int8_t P_hysteresis = 2;              //2°C
 int8_t P_seuilEte = 19;
 uint16_t P_tempoLCD = 300;
@@ -65,6 +69,7 @@ SimpleDHT22 dht;
 YASM mesures, menu, regul, retro, datalog;
 
 bool saison = ETE;
+uint8_t mode = AUTO;
 
 
 
@@ -77,9 +82,9 @@ void setup()
 
   pinMode(pinRLalim, OUTPUT);
   pinMode(pinRLsens, OUTPUT);
+  off();
 
-  delay(1000);
-  lcd.begin(16, 2);                      // set up the LCD's number of columns and rows
+ lcd.begin(16, 2);                      // set up the LCD's number of columns and rows
   
   for(uint8_t i=0;i<sizeof(T);i++) T[i]=ERREUR;  
   for(uint8_t i=0;i<sizeof(H);i++) H[i]=ERREUR;
@@ -105,14 +110,17 @@ void loop()
     if(gpzda.traiterCar(gps.read())) 
     {
       time_t before = now();
-      Serial<<_endl<<before<<" ";
+      Serial<<_endl<<before<<' '<<hour()<<':'<<minute()<<" ";
       //setSyncInterval(90000); 
       setSyncProvider(NULL);           //pour être sûr de ne pas re-synchroniser avant la fin du test
       setTime(gpzda.heureUTC(), gpzda.minuteUTC(), gpzda.secondeUTC(), gpzda.jourUTC(), gpzda.moisUTC(), gpzda.anneeUTC());
+      Serial<<hour()<<':'<<minute()<<" ";
       adjustTime(ZONE_UTC * SECS_PER_HOUR);   // ici on est à UTC + 1
+      Serial<<hour()<<':'<<minute()<<" ";
       if (before > now()) before = before - now();
       else before = now()-before;
       Serial<<before<<" ";
+      Serial<<hour()<<':'<<minute()<<" ";
       // si l'heure gps diffère de plus ou moins 30s de l'heure RTC,  on synchronise la RTC,  sinon on la relit.
       if( before >30) 
       {
@@ -122,8 +130,9 @@ void loop()
       //else 
         setSyncProvider(RTC.get);
      
-      setSyncInterval(300);            // retour à la valeur par défaut
-      Serial<<now()<<_endl;
+        setSyncInterval(300);            // retour à la valeur par défaut
+        Serial<<hour()<<':'<<minute()<<" ";
+      Serial<<now();
     } 
   }
   retro.run();

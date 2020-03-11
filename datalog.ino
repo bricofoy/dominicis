@@ -46,8 +46,8 @@ void datalog_start()
   if(datalog.periodic(2000)) {
     SdOK=Sd.begin(PIN_SD_CS, SPI_HALF_SPEED);
     if(!SdOK) {
-      lcd.setCursor(15,0);
-      lcd<<F("x");
+      lcd.setCursor(14,0);
+      lcd<<F("er");
     }
   }
   
@@ -60,18 +60,18 @@ void datalog_write()
 {
   if(datalog.isFirstRun()) {
     FileOK=Logfile.open(nomDuFichierLog(), O_RDWR | O_CREAT | O_AT_END);
-    lcd.setCursor(15,0);
+    lcd.setCursor(14,0);
     if(!FileOK)
     {
-      lcd<<F("x");
+      lcd<<F("xx");
       SdOK=false;
       datalog.next(datalog_start);    
       return;
     }
-    lcd<<F("w");
+    lcd<<F("ec");
     
     //si le fichier est nouveau, on ajoute les étiquettes sur la première ligne
-    if(Logfile.fileSize()<10) Logfile<<F("Date;Tint;Hint;Text;Hext;Tvmc;Hvmc;Tchau;Text moy 10m;Text moy 24h;Registre F/O;Mode H/E")<<_endl;
+    if(Logfile.fileSize()<10) Logfile<<F("Date;Tint;Hint;Text;Hext;Tvmc;Hvmc;Tchau;Text moy 10m;Text moy 24h;Registre F/O;Saison H/E;Mode auto/O/F")<<_endl;
     
     //date et heure en début de ligne
     Logfile<<year()<<F("-")<<month()<<F("-")<<day()<<F(" ");
@@ -90,11 +90,12 @@ void datalog_write()
     //etat des registres
     Logfile<<(regul.isInState(regul_registres_ouverts) || regul.isInState(regul_ouverture))<<F(";");
     //mode
-    Logfile<<saison;
+    Logfile<<saison<<F(";")<<mode;
+    //fin de ligne et fermeture du fichier
     Logfile<<_endl;
     Logfile.close();
-    lcd.setCursor(15,0);
-    lcd<<F(" ");
+    lcd.setCursor(14,0);
+    lcd<<F("  ");
     datalog.next(datalog_wait);
   }
 }
