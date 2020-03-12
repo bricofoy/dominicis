@@ -49,11 +49,11 @@ SoftwareSerial gps(2, 3);   // RX, TX
 #define CLOSED 2
 
 int P_periode_mesures = 5;            //5secondes
-int P_periode_enregistrement = 300;   //600s = 10 min
+int P_periode_enregistrement = 300;   //300s = 5 min
 int8_t P_hysteresis = 2;              //2°C
 int8_t P_seuilEte = 19;
-uint16_t P_tempoLCD = 60;
-uint8_t P_tempoMvmt = 160;            //2m 40s
+uint16_t P_tempoLCD = 120;
+uint8_t P_tempoMvmt = 155;            //2m 35s
 
 float T[4], H[3];
 int tab6Text[6], tab24Text[24];
