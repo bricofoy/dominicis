@@ -107,6 +107,7 @@ void menu_heure()
   if(haut.state(BTN_CLICK)) menu.next(menu_moy);
   
   if(gauche.state(BTN_LONGCLICK)) menu.next(menu_etat);
+  if(droite.state(BTN_LONGCLICK)) menu.next(menu_relais);
 }
 
 // 0132456789012345
@@ -141,6 +142,30 @@ void menu_etat()
   }
   
   if(gauche.state(BTN_LONGCLICK)) menu.next(menu_mode);
+  if(bas.state(BTN_CLICK)) menu.next(menu_ext);
+  if(haut.state(BTN_CLICK)) menu.next(menu_heure);
+}
+
+void menu_relais()
+{
+  if(menu.isFirstRun()) {
+    purgeBtn();
+    lcd.clear();
+  }
+  
+  if(menu.periodic(800)) {
+    //ligne 1
+    lcd.setCursor(0,0);
+    printMode(); printSp(); printSaison(); printSp(); printOF();
+    
+    //ligne 2
+    lcd.setCursor(0,1); 
+    if(regul.isInState(regul_fermeture) || regul.isInState(regul_ouverture)) {
+      lcd<<(regul.timeOnState()/1000)<<"/"<<P_tempoMvmt;
+    }
+  }
+  
+  if(gauche.state(BTN_CLICK)) menu.next(menu_heure);
   if(bas.state(BTN_CLICK)) menu.next(menu_ext);
   if(haut.state(BTN_CLICK)) menu.next(menu_heure);
 }
@@ -304,7 +329,7 @@ void retro_off()
   
   if (lcd.readButtons()) {
     retro.next(retro_on);
-    //menu.next(menu_heure);
-    delay(500);
+    delay(200);
+    menu.next(menu_heure,true); //  <-- Nico si tu passe par là, c'est là que ça chiait, quand j'ai rajouté cette ligne ! Mais depuis que j'ai rajouté un autre écran au menu, bah c'est quand je l'enlève que ça chie...
   }
 }
