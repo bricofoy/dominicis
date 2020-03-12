@@ -1,4 +1,5 @@
 
+
 #include <Wire.h>
 #include <Adafruit_RGBLCDShield.h>
 #include <utility/Adafruit_MCP23017.h>
@@ -51,8 +52,8 @@ int P_periode_mesures = 5;            //5secondes
 int P_periode_enregistrement = 300;   //600s = 10 min
 int8_t P_hysteresis = 2;              //2°C
 int8_t P_seuilEte = 19;
-uint16_t P_tempoLCD = 30;
-uint8_t P_tempoMvmt = 90;
+uint16_t P_tempoLCD = 60;
+uint8_t P_tempoMvmt = 160;            //2m 40s
 
 float T[4], H[3];
 int tab6Text[6], tab24Text[24];
