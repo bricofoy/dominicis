@@ -146,6 +146,10 @@ void menu_etat()
   if(haut.state(BTN_CLICK)) menu.next(menu_heure);
 }
 
+// 0132456789012345
+// AUTO ETE F
+// xxx/155
+
 void menu_relais()
 {
   if(menu.isFirstRun()) {
