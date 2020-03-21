@@ -40,6 +40,11 @@ void fatDateTime(uint16_t* date, uint16_t* time) {
   *time = FAT_TIME(hour(), minute(), second());
 }
 
+char separateur()
+{
+  return ';';
+}
+
 /////////////////////////datalog state machine//////////////////////////////////
 void datalog_setup()
 {
@@ -91,22 +96,22 @@ void datalog_write()
     
     //date et heure en début de ligne
     Logfile<<year()<<F("-")<<month()<<F("-")<<day()<<F(" ");
-    Logfile<<hour()<<F(":")<<minute()<<F(":")<<second()<<F(";");
+    Logfile<<hour()<<F(":")<<minute()<<F(":")<<second()<<separateur();
   }
   
   uint8_t i=datalog.runCount();
   
   //températures et humidités
-  if(i<3) Logfile<<_FLOAT(T[i],1)<<F(";")<<_FLOAT(H[i],1)<<F(";");
-  if(i==3) Logfile<<_FLOAT(T[i],1)<<F(";");
+  if(i<3) Logfile<<_FLOAT(T[i],1)<<separateur()<<_FLOAT(H[i],1)<<separateur();
+  if(i==3) Logfile<<_FLOAT(T[i],1)<<separateur();
   
   if(i==4) {
     //moyennes Text
-    Logfile<<_FLOAT(Tmoy6ext,1)<<F(";")<<_FLOAT(Tmoy24ext,1)<<F(";");
+    Logfile<<_FLOAT(Tmoy6ext,1)<<separateur()<<_FLOAT(Tmoy24ext,1)<<separateur();
     //etat des registres
-    Logfile<<(regul.isInState(regul_registres_ouverts) || regul.isInState(regul_ouverture))<<F(";");
+    Logfile<<(regul.isInState(regul_registres_ouverts) || regul.isInState(regul_ouverture))<<separateur();
     //mode
-    Logfile<<saison<<F(";")<<mode;
+    Logfile<<saison<<separateur()<<mode;
     //fin de ligne et fermeture du fichier
     Logfile<<_endl;
     Logfile.close();
