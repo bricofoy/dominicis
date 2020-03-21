@@ -87,8 +87,8 @@ void setup()
 
  lcd.begin(16, 2);                      // set up the LCD's number of columns and rows
   
-  for(uint8_t i=0;i<(sizeof(T)/sizeof(T[0]));i++) T[i]=ERREUR;  
-  for(uint8_t i=0;i<(sizeof(H)/sizeof(H[0]));i++) H[i]=ERREUR;
+  for(uint8_t i=0;i<(sizeof(T)/sizeof(T[0]));i++) {asm("nop"); T[i]=ERREUR; } 
+  for(uint8_t i=0;i<(sizeof(H)/sizeof(H[0]));i++) {asm("nop"); H[i]=ERREUR; }
   
   setSyncProvider(RTC.get);              // the function to get the time from the RTC
 
