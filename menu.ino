@@ -333,7 +333,7 @@ void retro_off()
   
   if (lcd.readButtons()) {
     retro.next(retro_on);
-    delay(200);
-    menu.next(menu_heure,true); //  <-- Nico si tu passe par là, c'est là que ça chiait, quand j'ai rajouté cette ligne ! Mais depuis que j'ai rajouté un autre écran au menu, bah c'est quand je l'enlève que ça chie...
+    //delay(200);
+    menu.next(menu_heure,true); //pour repartir toujours sur le même écran à l'allumage
   }
 }

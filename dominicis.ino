@@ -85,7 +85,7 @@ void setup()
   pinMode(pinRLsens, OUTPUT);
   off();
 
- lcd.begin(16, 2);                      // set up the LCD's number of columns and rows
+  lcd.begin(16, 2);                      // set up the LCD's number of columns and rows
   
   for(uint8_t i=0;i<(sizeof(T)/sizeof(T[0]));i++) {asm("nop"); T[i]=ERREUR; } 
   for(uint8_t i=0;i<(sizeof(H)/sizeof(H[0]));i++) {asm("nop"); H[i]=ERREUR; }
@@ -110,32 +110,31 @@ void loop()
   while (gps.available()) {
     if(gpzda.traiterCar(gps.read())) 
     {
-      time_t before = now();
-      Serial<<_endl<<before<<' '<<hour()<<':'<<minute()<<" ";
-      //setSyncInterval(90000); 
-      setSyncProvider(NULL);           //pour être sûr de ne pas re-synchroniser avant la fin du test
-      setTime(gpzda.heureUTC(), gpzda.minuteUTC(), gpzda.secondeUTC(), gpzda.jourUTC(), gpzda.moisUTC(), gpzda.anneeUTC());
-      Serial<<hour()<<':'<<minute()<<" ";
-      adjustTime(ZONE_UTC * SECS_PER_HOUR);   // ici on est à UTC + 1
-      Serial<<hour()<<':'<<minute()<<" ";
-      if (before > now()) before = before - now();
-      else before = now()-before;
-      Serial<<before<<" ";
-      Serial<<hour()<<':'<<minute()<<" ";
-      // si l'heure gps diffère de plus ou moins 30s de l'heure RTC,  on synchronise la RTC,  sinon on la relit.
-      if( before >30) 
-      {
-        RTC.set(now());
-        Serial<<"sync ";
-      }
-      //else 
-        setSyncProvider(RTC.get);
-     
-        setSyncInterval(300);            // retour à la valeur par défaut
-        Serial<<hour()<<':'<<minute()<<" ";
-      Serial<<now();
+      time_t before = now(); //gardons en mémoire la valeur de l'horloge avant la lecture gps
+      
+      setSyncProvider(NULL); //ça c'est juste pour être sûr de ne pas re-synchroniser avant la fin du test
+      
+      setTime(gpzda.heureUTC(), gpzda.minuteUTC(), gpzda.secondeUTC(), gpzda.jourUTC(), gpzda.moisUTC(), gpzda.anneeUTC()); //lecture du temps GPS (temps UTC)
+      adjustTime(ZONE_UTC * SECS_PER_HOUR);   // ici on est à UTC + 1 (ZONE_UTC = 1)
+      
+      // calcul de la valeur absolue du décale entre le temps gps et l'horloge RTC
+      if (before > now()) 
+        before = before - now();
+      else 
+        before = now()-before;
+      
+      // si l'heure gps diffère de plus ou moins 30s de l'heure RTC,  on synchronise la RTC,  
+      if (before >30) 
+              RTC.set(now());
+      
+      //sinon on la relit.
+      setSyncProvider(RTC.get);
+      
+      setSyncInterval(300);            // retour à la valeur par défaut
     } 
   }
+  
+  //execution des différentes tâches :
   retro.run();
   mesures.run();
   menu.run();

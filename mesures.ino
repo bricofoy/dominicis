@@ -18,7 +18,7 @@ void mesures_purge()
   uint8_t i = mesures.runCount();
   
   if (i < sizeof(pinDHT) ) 
-    dht.read(pinDHT[i], NULL, NULL, NULL); //lecture juste pour renouveller la valeur
+    dht.read(pinDHT[i], NULL, NULL, NULL); //lecture juste pour renouveler la valeur
     else {
       mesures.next(mesures_attenteAquisition);
       dsChau.requestTemperatures();
@@ -57,11 +57,11 @@ void mesures_majMoyennes()
     return;
   }
   
-  tab6Text[info.index6]=round(T[DHext]*10); //*10 pour garder une décimale alors que c'est un tableau de int
+  tab6Text[info.index6]=round(T[DHext]*10); //*10 pour garder une décimale alors que c'est un tableau de int pour économiser de la RAM
   Tmoy6ext=0;
-  for(uint8_t i=0;i<6;i++) Tmoy6ext+=tab6Text[i];
-  Tmoy6ext/=(float)info.init6?6:(info.index6+1);
-  Tmoy6ext/=10;
+  for(uint8_t i=0;i<6;i++) Tmoy6ext+=tab6Text[i]; //on somme les éléments du tableau
+  Tmoy6ext/=(float)info.init6?6:(info.index6+1); //puis division par le nombre d'éléments valides dans le tableau uniquement
+  Tmoy6ext/=10; //et on /10 pour récupérer la décimale dans la valeur finale
   
   if(++info.index6==6){
     info.init6=true;
